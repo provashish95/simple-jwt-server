@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+const jwt = require('jsonwebtoken')
 const cors = require('cors');
 require("dotenv").config();
 const port = process.env.PORT || 5000;
@@ -16,8 +17,19 @@ app.get('/', (req, res) => {
 
 app.post('/login', async (req, res) => {
     const user = req.body;
-    console.log(user);
-    res.send({ success: true });
+
+    if (user.email === 'user@gmail.com' && user.password === '123456') {
+        const accessToken = jwt.sign({ email: user.email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+        res.send({
+            success: true,
+            accessToken: accessToken
+        });
+
+    } else {
+        res.send({ success: false });
+    }
+
+
 })
 
 app.listen(port, () => {
