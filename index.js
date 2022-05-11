@@ -10,6 +10,16 @@ const port = process.env.PORT || 5000;
 app.use(express.json())
 app.use(cors())
 
+const verifyJwt = (req, res, next) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+        return res.status(401).res.send({ message: 'unauthorization' })
+    }
+
+
+}
+
+
 app.get('/', (req, res) => {
     res.send('Hello World!')
 })
@@ -28,8 +38,11 @@ app.post('/login', async (req, res) => {
     } else {
         res.send({ success: false });
     }
+});
 
+app.get('/orders', verifyJwt, (req, res) => {
 
+    res.send([{ id: 1, item: 'sunglass' }, { id: 2, item: 'moonglass' }])
 })
 
 app.listen(port, () => {
